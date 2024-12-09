@@ -153,12 +153,4 @@ Feel free to submit issues or pull requests for bug fixes or new features. Contr
 
 --- 
 
-## Author
-
-**Mohamed Thabet**  
-💻 Back-End Engineer | 🌐 Cybersecurity Enthusiast  
-[GitHub](https://github.com/MohamedThabt) | [LinkedIn](#)  
-
----
-
 **License:** This project is licensed under the MIT License.
