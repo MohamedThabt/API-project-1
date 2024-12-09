@@ -16,7 +16,7 @@ class PostController extends Controller
 
 
     //Add new post
-    public function addPost(Request $request){
+    public function store(Request $request){
         $request->validate( [ 
             'title' => ['required','string','max:255'],
             'content' => ['required','string','min:6'],
@@ -37,7 +37,7 @@ class PostController extends Controller
     }
 
     // Edit post
-    public function editPost(Request $request){
+    public function edit(Request $request){
         $request->validate( [ 
             'title' => ['required','string','max:255'],
             'content' => ['required','string','min:6'],
@@ -56,8 +56,9 @@ class PostController extends Controller
         }
     }
 
-    // get single post
-    public function getPost($id)
+
+    // Get single post
+    public function show($id)
     {
         $validatedData = ['id' => $id];
         $validator = validator($validatedData, [
@@ -75,7 +76,7 @@ class PostController extends Controller
 
 
     // delete post 
-    public function deletePost($id){
+    public function destroy($id){
         $validatedData = ['id' => $id];
         $validator = validator($validatedData, [
             'id' => ['required', 'integer', 'exists:posts,id'],

@@ -26,7 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Blog Routes
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'store'])->name('posts.store');
-        Route::put('/{id}', [PostController::class, 'update'])->name('posts.update'); // Changed to PUT for RESTful compliance
+        Route::put('/{id}', [PostController::class, 'edit'])->name('posts.update'); // Changed to PUT for RESTful compliance
         Route::delete('/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
     });
 
