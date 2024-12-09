@@ -14,7 +14,7 @@ Route::middleware('guest')->group(function () {
 
 // No need to be authenticated to access this route
 Route::get('/posts', [PostController::class, 'index']);
-Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
+Route::get('/post/{post}', [PostController::class, 'show'])->name('post.show');
 
 // Protected Routes (requires sanctum authentication)
 Route::middleware('auth:sanctum')->group(function () {
@@ -26,8 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Blog Routes
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'store'])->name('posts.store');
-        Route::put('/{id}', [PostController::class, 'edit'])->name('posts.update'); // Changed to PUT for RESTful compliance
-        Route::delete('/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+        Route::put('/{post}', [PostController::class, 'edit'])->name('posts.update'); // Changed to PUT for RESTful compliance
+        Route::delete('/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
     });
 
     // Comment Routes
