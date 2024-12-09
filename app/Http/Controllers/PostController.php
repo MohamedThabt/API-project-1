@@ -16,34 +16,25 @@ class PostController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Use Validator to validate the request
-        $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255'],
-            'content' => ['required', 'string', 'min:6'],
-            'user_id' => auth()->id(),
-        ]);
+{
+    // Validate the request data
+    $request->validate([
+        'title' => ['required', 'string', 'max:255'],
+        'content' => ['required', 'string', 'min:6'],
+    ]);
 
-        // Check if validation fails
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation errors occurred.',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+    // Create the post with the authenticated user ID
+    $post = Post::create([
+        'title' => $request->title,
+        'content' => $request->content,
+        'user_id' => auth()->id(),
+    ]);
 
-        // Retrieve validated data
-        $validated = $validator->validated();
-
-        // Create the post
-        $post = Post::create($validated);
-
-        // Return success response
-        return response()->json([
-            'message' => 'Post created successfully!',
-            'post' => $post,
-        ], 201);
-    }
+    return response()->json([
+        'message' => 'Post created successfully!',
+        'post' => $post,
+    ], 201);
+}
 
     // Edit post
     public function edit(Request $request, Post $post)
