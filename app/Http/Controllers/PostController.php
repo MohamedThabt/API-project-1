@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Support\Facades\Validator;
 
 class PostController extends Controller
 {
@@ -15,62 +16,101 @@ class PostController extends Controller
     }
 
 
-    //Add new post
-    public function store(Request $request){
-        $request->validate( [ 
-            'title' => ['required','string','max:255'],
-            'content' => ['required','string','min:6'],
-            'user_id' => ['required','integer','exists:users,id'],
+    public function store(Request $request)
+    {
+        // Use Validator to validate the request
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string', 'min:6'],
+            'user_id' => auth()->id(),
         ]);
-        
-        try{
-            $post = Post::create([
-                'title' => $request->title,
-                'content' => $request->content,
-                'user_id' => $request->user_id,
-            ]);
-            return response()->json(['message' => 'Post created successfully!',
-                                            'post'=> $post], 201); 
-        }catch(\Exception $e){
-            return response()->json(['message' => 'Post creation failed!'], 500);   
+    
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation errors occurred.',
+                'errors' => $validator->errors(),
+            ], 422);
         }
+    
+        // Retrieve validated data
+        $validated = $validator->validated();
+    
+        // Create the post
+        $post = Post::create($validated);
+    
+        // Return success response
+        return response()->json([
+            'message' => 'Post created successfully!',
+            'post' => $post,
+        ], 201);
     }
-
+    
     // Edit post
-    public function edit(Request $request){
-        $request->validate( [ 
-            'title' => ['required','string','max:255'],
-            'content' => ['required','string','min:6'],
-            'id' => ['required','integer','exists:posts,id'],
+    public function edit(Request $request)
+    {
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'id' => ['required', 'integer', 'exists:posts,id'], // Ensure the post exists
+            'title' => ['required', 'string', 'max:255'],
+            'content' => ['required', 'string', 'min:6'],
+            'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
-        
-        try{
-            $post = Post::where('id', $request->id)->update([
-                'title' => $request->title,
-                'content' => $request->content,
-            ]);
-            return response()->json(['message' => 'Post updated successfully!',
-                                            'post'=> $post], 201); 
-        }catch(\Exception $e){
-            return response()->json(['message' => 'Post update failed!'], 500);   
+    
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation errors occurred.',
+                'errors' => $validator->errors(),
+            ], 422);
         }
+    
+        $validated = $validator->validated();
+    
+        // Find and update the post
+        $post = Post::find($validated['id']);
+    
+        // Ensure the post belongs to the authenticated user (optional security check)
+        if ($post->user_id !== $validated['user_id']) {
+            return response()->json([
+                'message' => 'Unauthorized to edit this post.',
+            ], 403);
+        }
+    
+        $post->update([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+        ]);
+    
+        // Return success response
+        return response()->json([
+            'message' => 'Post updated successfully!',
+            'post' => $post,
+        ], 200);
     }
+    
 
 
     // Get single post
     public function show($id)
     {
-        $validatedData = ['id' => $id];
-        $validator = validator($validatedData, [
-            'id' => ['required', 'integer', 'exists:posts,id'],
-        ]);
+         // Validate the post ID
+    $validator = Validator::make(['id' => $id], [
+        'id' => ['required', 'integer', 'exists:posts,id'],
+    ]);
         
-        if ($validator->fails()) {
-            return response()->json(['message' => 'Invalid post ID'], 422);
-        }
-    
-        $post = Post::with('user','comments','likes')->find( $id );
-        return response()->json(['post' => $post], 200);
+    if ($validator->fails()) {
+        return response()->json([
+            'message' => 'Invalid post ID',
+            'errors' => $validator->errors(),
+        ], 422);
+    }
+     // Retrieve the post with its relationships
+    $post = Post::with(['user', 'comments', 'likes'])->find($id);
+
+    return response()->json([
+        'message' => 'Post retrieved successfully!',
+        'post' => $post,
+    ], 200);
     }
     
 
