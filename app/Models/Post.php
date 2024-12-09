@@ -12,6 +12,13 @@ class Post extends Model
         'user_id',
     ];
 
+    // Eager load relationships
+    protected $with = [
+        'user', 
+        'comments', 
+        'likes'
+    ];
+
     function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
