@@ -39,19 +39,11 @@ class PostController extends Controller
     // Edit post
     public function edit(Request $request, Post $post)
     {
-        // Validate the request data
-        $validator = Validator::make($request->all(), [
+         // Validate the request data
+        $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string', 'min:6'],
-            'user_id' => ['required', 'integer', 'exists:users,id'],
         ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation errors occurred.',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
 
         // Validate the user_id to ensure the authenticated user is the post owner (optional security check)
         if ($post->user_id !== $request->user_id) {
