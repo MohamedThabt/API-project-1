@@ -33,7 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Comment Routes
     Route::prefix('comments')->group(function () {
         Route::post('/', [CommentController::class, 'store'])->name('comments.store');
-        Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+        Route::delete('/id', [CommentController::class, 'destroy'])->name('comments.destroy');
     });
 
     // Like Routes
