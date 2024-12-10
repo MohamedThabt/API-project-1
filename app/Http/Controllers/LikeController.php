@@ -46,6 +46,7 @@ class LikeController extends Controller
 
         // Return a success response with the created like
         return response()->json([
+            'like_id' => $like->id,
             'message' => 'Like created successfully!',
         ], 201);
     }
