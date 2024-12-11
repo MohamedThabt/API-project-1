@@ -32,9 +32,40 @@
 
 ## API Endpoints
 
+### **Authentication**
+- `POST /api/register`  
+  Register a new user.  
+  **Request Body:**  
+  ```json
+  {
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "password": "password"
+  }
+  ```
+
+- `POST /api/login`  
+  Authenticate a user and retrieve a token.  
+  **Request Body:**  
+  ```json
+  {
+      "email": "john.doe@example.com",
+      "password": "password"
+  }
+  ```
+
+- `POST /api/logout`  
+  Log out the authenticated user.
+
+- `GET /api/user`  
+  Retrieve information about the authenticated user.
+
 ### **Posts**
 - `GET /api/posts`  
   Retrieve all posts with pagination.
+
+- `GET /api/post/{id}`  
+  Retrieve details of a specific post.
 
 - `POST /api/posts`  
   Create a new post.  
@@ -46,7 +77,7 @@
   }
   ```
 
-- `PUT /api/posts/{post}`  
+- `PUT /api/posts/{id}`  
   Update an existing post.  
   **Request Body:**  
   ```json
@@ -56,7 +87,7 @@
   }
   ```
 
-- `DELETE /api/posts/{post}`  
+- `DELETE /api/posts/{id}`  
   Delete a specific post.
 
 ### **Comments**
@@ -70,7 +101,7 @@
   }
   ```
 
-- `DELETE /api/comments/{comment}`  
+- `DELETE /api/comments/{id}`  
   Delete a specific comment.
 
 ### **Likes**
@@ -83,7 +114,7 @@
   }
   ```
 
-- `DELETE /api/likes/{like}`  
+- `DELETE /api/likes/{id}`  
   Remove a like from a post.
 
 ---
@@ -92,6 +123,7 @@
 
 - **Models:** `Post`, `Comment`, and `Like` manage the data and relationships.
 - **Controllers:** Handle the logic for each endpoint.
+  - `AuthController`
   - `PostController`
   - `CommentController`
   - `LikeController`
